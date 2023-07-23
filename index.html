@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Simon dice</title>
+	<meta charset="utf-8">
+
+<style>
+
+body{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+	margin: 0;
+}	
+.btn{
+	width: 100px;
+	height: 100px;
+	border-radius: 50%;
+	opacity: 0.6;
+
+}
+.sequence .btn{
+	flex: 1;
+	margin: 5px;
+}
+
+.sequence-container{
+	display: flex;
+	margin-bottom: 5px
+}
+.red{
+	background-color: red;
+}
+.blue{
+	background-color: blue;
+}
+.green{
+	background-color: green;
+}
+.yellow{
+	background-color: yellow;
+}
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>Simon Dice</h1>
+<div class="sequence-container">
+	<div class="sequence" id="sequence"></div>
+</div>
+<div class="btn red" onclick="checkColor('red')"></div>
+<div class="btn blue" onclick="checkColor('blue')"></div>
+<div class="btn green" onclick="checkColor('green')"></div>
+<div class="btn yellow" onclick="checkColor('yellow')"></div>
+
+<script>
+	
+	const colors = ['red', "blue", "green", "yellow"];
+	let simonSequence = [];
+	let playerSequence = [];
+	let level = 1;
+	let canClick = false;
+
+	function sleep(ms) {
+		return new Promise(resolve => setTimeout(resolve, ms));
+	}
+
+	async function simonSays() {
+		canClick = false;
+		for (let i = 0; i < 2; i++) {
+		
+		simonSequence.push(colors[Math.floor(Math.random() * colors.length)])
+
+		}
+		alert(`Nivel ${level}: Observa la secuencia y repítela.`);
+		await showSequence();
+
+		canClick = true;
+		playerSequence = [];
+		alert("Ahora es tu turno. Haz click en los botones para repetir la secuencia")
+	}
+
+	async function showSequence(){
+		const sequenceContainer = document.getElementById("sequence");
+		for (const color of simonSequence) {
+			sequenceContainer.innerHTML = `<div class="btn ${color}"></div>`
+			await sleep(800);
+			sequenceContainer.innerHTML= "";
+			await sleep(300)
+		}
+
+}
+
+
+
+function checkColor(color) {
+	
+	if (canClick) {
+		playerSequence.push(color);
+		const index = playerSequence.length - 1;
+
+		if (playerSequence[index] !== simonSequence[index]) {
+			alert(`Perdiste cabrón, solo llegaste al nivel ${level}`);
+			simonSequence = [];
+			playerSequence = [];
+			level = 1
+		}else if (playerSequence.length === simonSequence.length) {
+			level ++;
+			simonSays();
+		}
+	}
+}
+
+			simonSays();
+</script>
+
+</body>
+</html>
